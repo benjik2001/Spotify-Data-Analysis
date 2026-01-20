@@ -30,9 +30,12 @@ def get_token():
 def get_auth_header(token):
     return {"Authorization": "Bearer " + token}
 
+
+token = get_token()
+
 # Search Functions
 
-def search_for_artist(token, artist_name):
+def search_for_artist(artist_name):
     url = "https://api.spotify.com/v1/search"
     headers = get_auth_header(token)
     query = f"?q={artist_name}&type=artist&limit=1"
@@ -47,7 +50,7 @@ def search_for_artist(token, artist_name):
     
     return json_result[0]
 
-def search_for_song(token, song_name, artist_name):
+def search_for_song(song_name, artist_name):
     url = "https://api.spotify.com/v1/search"
     headers = get_auth_header(token)
     if (artist_name is None):
@@ -67,15 +70,14 @@ def search_for_song(token, song_name, artist_name):
 
 # Get Functions
 
-def get_songs_by_artist(token, artist_id):
+def get_songs_by_artist(artist_id):
     url = f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks?country=US"
     headers = get_auth_header(token)
     result = get(url, headers = headers)
     json_result = json.loads(result.content)["tracks"]
     return json_result
 
-
-def get_song_features(token, song_id):
+def get_song_features(song_id):
     url = f"https://api.spotify.com/v1/audio-features/{song_id}"
     headers = get_auth_header(token)
     result = get(url, headers = headers)
@@ -84,14 +86,12 @@ def get_song_features(token, song_id):
 
 # Testing
 
-token = get_token()
-
-result = search_for_artist(token, "BIBI")
+result = search_for_artist("BIBI")
 artist_id = result["id"]
-songs = get_songs_by_artist(token, artist_id)
+songs = get_songs_by_artist(artist_id)
 
-song_result = search_for_song(token, "Rise & Fall", "JUNNY")
+song_result = search_for_song("Rise & Fall", "JUNNY")
 song_id = song_result["id"]
-song_features = get_song_features(token, song_id)
+song_features = get_song_features(song_id)
 print(song_features)
 print(song_id)
